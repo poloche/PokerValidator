@@ -54,4 +54,8 @@ public class Card {
     public void setNumber(Number number) {
         this.number = number;
     }
+
+    public String getSymbol() {
+        return symbol;
+    }
 }

@@ -1,5 +1,8 @@
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PokerGameTest {
@@ -9,7 +12,48 @@ public class PokerGameTest {
         PokerGame game = new PokerGame();
         game.addHand("AD KD QD JD 10D");
         game.addHand("KD QD JD 10D 9D");
-        Hand winner = game.getWinner();
-        assertTrue(winner.isRoyalFlush());
+        List<Hand> winners = game.getWinner();
+        assertNotNull(winners);
+        assertTrue(winners.get(0).isRoyalFlush());
+    }
+
+    @Test
+    public void testWinnerIsPoker(){
+        PokerGame game = new PokerGame();
+        game.addHand("AD AC AH AS 10D");
+        game.addHand("KD QD JD 10D 9D");
+        List<Hand> winners = game.getWinner();
+        assertNotNull(winners);
+        assertTrue(winners.get(0).isPoker());
+    }
+
+    @Test
+    public void testWinnerIsFull(){
+        PokerGame game = new PokerGame();
+        game.addHand("AD AC AH 10S 10D");
+        game.addHand("KD QD JD 1D 9D");
+        List<Hand> winners = game.getWinner();
+        assertNotNull(winners);
+        assertTrue(winners.get(0).isThree());
+    }
+
+    @Test
+    public void testWinnerIsTwoPairs(){
+        PokerGame game = new PokerGame();
+        game.addHand("AD AC 8H 10S 10D");
+        game.addHand("KD KD JD 1D 9D");
+        List<Hand> winners = game.getWinner();
+        assertNotNull(winners);
+        assertTrue(winners.get(0).isTwoPairs());
+    }
+
+    @Test
+    public void testWinnerIsPairs(){
+        PokerGame game = new PokerGame();
+        game.addHand("AD AC 8H 1S 10D");
+        game.addHand("KD 5D JD 1D 9D");
+        List<Hand> winners = game.getWinner();
+        assertNotNull(winners);
+        assertTrue(winners.get(0).isPair());
     }
 }
