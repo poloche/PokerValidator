@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PokerGame {
@@ -59,6 +61,8 @@ public class PokerGame {
             }
             if(hand.isPoker()){
                 pokers.add(hand);
+                Comparator<Hand> comparator = Collections.reverseOrder(new WeightComparator());
+                Collections.sort(pokers, comparator);
             }
             if(hand.isThree()){
                 fulls.add(hand);

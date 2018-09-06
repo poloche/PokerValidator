@@ -78,7 +78,7 @@ public class Hand {
         return mapCards.size() == 4;
     }
 
-    private Integer getHandWeight() {
+    public Integer getHandWeight() {
         BigInteger sumValue = new BigInteger("0");
         for (Card card : cards) {
             sumValue = sumValue.add(new BigInteger(String.valueOf(card.getNumber())));

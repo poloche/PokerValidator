@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,6 +26,17 @@ public class PokerGameTest {
         List<Hand> winners = game.getWinner();
         assertNotNull(winners);
         assertTrue(winners.get(0).isPoker());
+    }
+
+    @Test
+    public void testWinnerIsPokerWeight(){
+        PokerGame game = new PokerGame();
+        game.addHand("AD AC AH AS 10D");
+        game.addHand("KD KC KH KS 9D");
+        List<Hand> winners = game.getWinner();
+        assertNotNull(winners);
+        assertTrue(winners.get(0).isPoker());
+        assertEquals(winners.get(0).getHandWeight().intValue(),66);
     }
 
     @Test
