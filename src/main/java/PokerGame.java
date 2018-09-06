@@ -4,13 +4,12 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PokerGame {
-    List<Hand> hands;
-    Hand winner;
-    List<Hand> royalflush = new ArrayList<>();
-    List<Hand> pokers = new ArrayList<>();
-    List<Hand> fulls = new ArrayList<>();
-    List<Hand> twoPairs = new ArrayList<>();
-    List<Hand> pairs = new ArrayList<>();
+    private List<Hand> hands;
+    private List<Hand> royalFlush = new ArrayList<>();
+    private List<Hand> pokers = new ArrayList<>();
+    private List<Hand> fulls = new ArrayList<>();
+    private List<Hand> twoPairs = new ArrayList<>();
+    private List<Hand> pairs = new ArrayList<>();
     public PokerGame() {
         this.hands = new ArrayList<>();
     }
@@ -33,8 +32,8 @@ public class PokerGame {
     }
 
     private List<Hand> checkRules() {
-        if(!royalflush.isEmpty()){
-            return royalflush;
+        if(!royalFlush.isEmpty()){
+            return royalFlush;
         }
 
         if(!pokers.isEmpty()){
@@ -57,7 +56,7 @@ public class PokerGame {
 
         for (Hand hand : hands) {
             if(hand.isRoyalFlush()){
-                royalflush.add(hand);
+                royalFlush.add(hand);
             }
             if(hand.isPoker()){
                 pokers.add(hand);
