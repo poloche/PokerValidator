@@ -34,9 +34,18 @@ public class PokerGameTest {
         game.addHand("KD QD JD 1D 9D");
         List<Hand> winners = game.getWinner();
         assertNotNull(winners);
-        assertTrue(winners.get(0).isThree());
+        assertTrue(winners.get(0).isFullHouse());
     }
 
+    @Test
+    public void testWinnerIsThree(){
+        PokerGame game = new PokerGame();
+        game.addHand("AD AC AH 8S 10D");
+        game.addHand("KD QD JD 1D 9D");
+        List<Hand> winners = game.getWinner();
+        assertNotNull(winners);
+        assertTrue(winners.get(0).isThree());
+    }
     @Test
     public void testWinnerIsTwoPairs(){
         PokerGame game = new PokerGame();

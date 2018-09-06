@@ -42,15 +42,23 @@ public class Hand {
         return mapCards.size() == 2 && !isThree();
     }
 
-    public boolean isThree() {
+    public boolean isFullHouse(){
+        boolean hasPair = false;
+        boolean hasThree = false;
         if(mapCards.size() == 2){
             for (Map.Entry<String, List<Card>> entry : mapCards.entrySet()) {
                 if (entry.getValue().size() == 2) {
-                    return true;
+                    hasPair = true;
+                }
+                if (entry.getValue().size() == 3) {
+                    hasThree = true;
                 }
             }
         }
-        return false;
+        return hasPair && hasThree;
+    }
+    public boolean isThree() {
+        return mapCards.size() == 3 && !isTwoPairs();
     }
 
     public boolean isTwoPairs() {
