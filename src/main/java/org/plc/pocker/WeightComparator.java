@@ -1,3 +1,5 @@
+package org.plc.pocker;
+
 public class WeightComparator implements java.util.Comparator<Hand> {
 
     @Override

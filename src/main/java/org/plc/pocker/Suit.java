@@ -1,3 +1,5 @@
+package org.plc.pocker;
+
 public enum Suit {
     Diamond('D'),
     Club('C'),
