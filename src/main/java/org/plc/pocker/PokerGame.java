@@ -22,6 +22,7 @@ public class PokerGame {
 
     private void configureGameRules() {
         royalFlush = new RoyalFlush();
+        StraightFlush straightFlush = new StraightFlush();
         Poker poker = new Poker();
         FullHouse fullHouse = new FullHouse();
         Three three = new Three();
@@ -29,7 +30,8 @@ public class PokerGame {
         Pairs pairs = new Pairs();
         HighCard highCard = new HighCard();
 
-        royalFlush.setNext(poker);
+        royalFlush.setNext(straightFlush);
+        straightFlush.setNext(poker);
         poker.setNext(fullHouse);
         fullHouse.setNext(three);
         three.setNext(twoPairs);

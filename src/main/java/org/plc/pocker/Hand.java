@@ -32,8 +32,6 @@ public class Hand {
     }
 
 
-
-
     public Integer getHandWeight() {
         BigInteger sumValue = new BigInteger("0");
         for (Card card : cards) {
@@ -43,14 +41,12 @@ public class Hand {
     }
 
 
-
-
     public List<Card> getCards() {
         return cards;
     }
 
     public void setGame(int game) {
-        this.game = game;
+        this.game = getHandWeight() * game;
     }
 
     public Map<String, List<Card>> getMapCards() {

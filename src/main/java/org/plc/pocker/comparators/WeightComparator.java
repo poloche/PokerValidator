@@ -1,4 +1,6 @@
-package org.plc.pocker;
+package org.plc.pocker.comparators;
+
+import org.plc.pocker.Hand;
 
 public class WeightComparator implements java.util.Comparator<Hand> {
 

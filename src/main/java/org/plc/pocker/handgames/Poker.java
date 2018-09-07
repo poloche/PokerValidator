@@ -7,18 +7,8 @@ import org.plc.pocker.WinnerResult;
 import java.util.List;
 import java.util.Map;
 
-public class Poker implements WhichHand {
-    private WhichHand next;
-
-    @Override
-    public void setNext(WhichHand winner) {
-        next = winner;
-    }
-
-    @Override
-    public WhichHand getNext() {
-        return next;
-    }
+public class Poker extends AbstractGame {
+    private static final int POKER_GAME_WEIGHT = 8;
 
     @Override
     public boolean checkGame(Hand hand, WinnerResult winnerResult) {
@@ -29,6 +19,18 @@ public class Poker implements WhichHand {
             next.checkGame(hand, winnerResult);
             return false;
         }
+    }
+
+    @Override
+    protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
+        hand.setGame(POKER_GAME_WEIGHT);
+        winnerResult.addPokerWinner(hand);
+        return true;
+    }
+
+    @Override
+    public boolean isNext(Hand hand) {
+        return !isPoker(hand);
     }
 
     private boolean isPoker(Hand hand) {

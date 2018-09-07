@@ -1,11 +1,12 @@
 package org.plc.pocker;
 
+import java.math.BigInteger;
 import java.security.InvalidParameterException;
 
 public class Card {
     private final String symbol;
     private Suit suit;
-    private Number number;
+    private BigInteger number;
 
     public Card(String cardString) {
         if (cardString == null || cardString.length() < 2 || cardString.length() > 3) {
@@ -18,17 +19,17 @@ public class Card {
         if (symbolIsLetter()) {
             number = getLetterValue(symbol);
         } else {
-            number = Integer.parseInt(symbol);
+            number = new BigInteger(symbol);
         }
 
     }
 
-    private Number getLetterValue(String symbol) {
+    private BigInteger getLetterValue(String symbol) {
         switch (symbol){
-            case "A": return 14;
-            case "K": return 13;
-            case "Q": return 12;
-            case "J": return 11;
+            case "A": return new BigInteger("14");
+            case "K": return new BigInteger("13");
+            case "Q": return new BigInteger("12");
+            case "J": return new BigInteger("11");
         }
         return null;
     }
@@ -49,11 +50,11 @@ public class Card {
         this.suit = suit;
     }
 
-    public Number getNumber() {
+    public BigInteger getNumber() {
         return number;
     }
 
-    public void setNumber(Number number) {
+    public void setNumber(BigInteger number) {
         this.number = number;
     }
 
