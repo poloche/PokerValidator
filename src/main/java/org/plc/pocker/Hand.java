@@ -52,4 +52,14 @@ public class Hand {
     public Map<String, List<Card>> getMapCards() {
         return mapCards;
     }
+
+    public String showCards(){
+        StringBuffer handString = new StringBuffer("");
+        for (Card card : cards) {
+            handString.append(card.getSymbol());
+            handString.append(card.getSuit().simbol);
+            handString.append(" ");
+        }
+        return handString.toString().trim();
+    }
 }

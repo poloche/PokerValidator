@@ -1,6 +1,10 @@
 package org.plc.pocker;
 
+import org.plc.pocker.comparators.WeightComparator;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class WinnerResult {
@@ -74,6 +78,8 @@ public class WinnerResult {
             return royalFlush;
         }
         if (!pokers.isEmpty()) {
+            Comparator<Hand> comparator = Collections.reverseOrder(new WeightComparator());
+            Collections.sort(pokers, comparator);
             return pokers;
         }
 
