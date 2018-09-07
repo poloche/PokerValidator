@@ -3,8 +3,10 @@ package org.plc.pocker.handgames;
 import org.plc.pocker.Hand;
 import org.plc.pocker.WinnerResult;
 
+import java.math.BigInteger;
+
 public class Pairs extends AbstractGame {
-    private static final int PAIR_GAME_WEIGHT = 2;
+    private static final BigInteger PAIR_GAME_WEIGHT = new BigInteger("2");
 
     @Override
     public boolean checkGame(Hand hand, WinnerResult winnerResult) {
@@ -19,7 +21,7 @@ public class Pairs extends AbstractGame {
 
     @Override
     protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
-        hand.setGame(PAIR_GAME_WEIGHT);
+        hand.setGameWeight(PAIR_GAME_WEIGHT);
         winnerResult.addPairWinner(hand);
 
         return true;

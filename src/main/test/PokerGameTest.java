@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.plc.pocker.Hand;
 import org.plc.pocker.PokerGame;
@@ -8,9 +7,7 @@ import org.plc.pocker.handgames.*;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PokerGameTest {
     private static WinnerResult winnerResult = new WinnerResult();
@@ -33,18 +30,30 @@ public class PokerGameTest {
     }
 
     @Test
+    public void testWinnerByWrightIsRoyalFlush() {
+        PokerGame game = new PokerGame();
+        game.addHand("AD KD QD JD 10D");
+        game.addHand("KD QD JD 10D 9D");
+        List<Hand> winners = game.getWinnerByWeight();
+        assertNotNull(winners);
+        RoyalFlush royalFlush = new RoyalFlush();
+        assertTrue(royalFlush.checkGame(winners.get(0), winnerResult));
+        assertEquals(winners.get(0).showCards(), "AD KD QD JD 10D");
+    }
+
+    @Test
     public void testWinnerIsPoker() {
         PokerGame game = new PokerGame();
         game.addHand("AD AC AH AS 10D");
         game.addHand("KD QD JD 10D 9D");
-        List<Hand> winners = game.getWinner();
+        List<Hand> winners = game.getWinnerByWeight();
         assertNotNull(winners);
 
         Poker poker = new Poker();
         assertTrue(poker.checkGame(winners.get(0), winnerResult));
         assertEquals(winners.get(0).showCards(), "AD AC AH AS 10D");
     }
-//
+
     @Test
     public void testWinnerIsPokerWeight(){
         PokerGame game = new PokerGame();

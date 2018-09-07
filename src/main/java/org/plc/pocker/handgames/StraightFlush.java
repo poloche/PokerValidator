@@ -5,15 +5,16 @@ import org.plc.pocker.Hand;
 import org.plc.pocker.WinnerResult;
 import org.plc.pocker.comparators.NumberComparator;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 
 public class StraightFlush extends AbstractGame {
-    private static final int STRAIGHT_FLUSH_GAME_WEIGHT = 9;
+    private static final BigInteger STRAIGHT_FLUSH_GAME_WEIGHT = new BigInteger("9");
 
     @Override
     protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
-        hand.setGame(STRAIGHT_FLUSH_GAME_WEIGHT);
+        hand.setGameWeight(STRAIGHT_FLUSH_GAME_WEIGHT);
         winnerResult.addRoyalWinner(hand);
         return true;
     }

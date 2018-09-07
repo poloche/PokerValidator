@@ -4,11 +4,12 @@ import org.plc.pocker.Card;
 import org.plc.pocker.Hand;
 import org.plc.pocker.WinnerResult;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
 public class Poker extends AbstractGame {
-    private static final int POKER_GAME_WEIGHT = 8;
+    private static final BigInteger POKER_GAME_WEIGHT = new BigInteger("8");
 
     @Override
     public boolean checkGame(Hand hand, WinnerResult winnerResult) {
@@ -23,7 +24,7 @@ public class Poker extends AbstractGame {
 
     @Override
     protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
-        hand.setGame(POKER_GAME_WEIGHT);
+        hand.setGameWeight(POKER_GAME_WEIGHT);
         winnerResult.addPokerWinner(hand);
         return true;
     }

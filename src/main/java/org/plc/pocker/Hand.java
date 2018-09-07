@@ -7,7 +7,7 @@ import java.util.*;
 public class Hand {
     private List<Card> cards;
     private Map<String, List<Card>> mapCards;
-    private int game;
+    private BigInteger gameWeight;
 
     public Hand(String handString) {
         if (handString == null) {
@@ -32,12 +32,12 @@ public class Hand {
     }
 
 
-    public Integer getHandWeight() {
+    public BigInteger getHandWeight() {
         BigInteger sumValue = new BigInteger("0");
         for (Card card : cards) {
             sumValue = sumValue.add(new BigInteger(String.valueOf(card.getNumber())));
         }
-        return sumValue.intValue();
+        return sumValue;
     }
 
 
@@ -45,8 +45,12 @@ public class Hand {
         return cards;
     }
 
-    public void setGame(int game) {
-        this.game = getHandWeight() * game;
+    public void setGameWeight(BigInteger gameWeight) {
+        this.gameWeight = gameWeight.multiply(getHandWeight());
+    }
+
+    public BigInteger getGameWeight() {
+        return gameWeight;
     }
 
     public Map<String, List<Card>> getMapCards() {
@@ -54,7 +58,7 @@ public class Hand {
     }
 
     public String showCards(){
-        StringBuffer handString = new StringBuffer("");
+        StringBuilder handString = new StringBuilder("");
         for (Card card : cards) {
             handString.append(card.getSymbol());
             handString.append(card.getSuit().simbol);

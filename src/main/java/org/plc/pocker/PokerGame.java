@@ -1,8 +1,11 @@
 package org.plc.pocker;
 
+import org.plc.pocker.comparators.WeightComparator;
 import org.plc.pocker.handgames.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PokerGame {
@@ -51,6 +54,12 @@ public class PokerGame {
 
         checkGames();
         return checkRules();
+    }
+
+    public List<Hand> getWinnerByWeight() {
+        Comparator<Hand> comparator = Collections.reverseOrder(new WeightComparator());
+        Collections.sort(hands, comparator);
+        return hands;
     }
 
     private List<Hand> checkRules() {

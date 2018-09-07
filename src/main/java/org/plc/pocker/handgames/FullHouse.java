@@ -4,15 +4,16 @@ import org.plc.pocker.Card;
 import org.plc.pocker.Hand;
 import org.plc.pocker.WinnerResult;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
 public class FullHouse extends AbstractGame {
-    private static final int POKER_GAME_WEIGHT = 6;
+    private static final BigInteger POKER_GAME_WEIGHT = new BigInteger("6");
 
     @Override
     protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
-        hand.setGame(POKER_GAME_WEIGHT);
+        hand.setGameWeight(POKER_GAME_WEIGHT);
         winnerResult.addFullWinner(hand);
         return true;
     }
