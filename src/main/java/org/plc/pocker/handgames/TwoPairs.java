@@ -7,29 +7,19 @@ import org.plc.pocker.WinnerResult;
 import java.util.List;
 import java.util.Map;
 
-public class TwoPairs implements WhichHand {
-    private WhichHand next;
-
+public class TwoPairs extends AbstractGame {
+    private static final int TWO_PAIRS_GAME_WEIGHT = 3;
 
     @Override
-    public void setNext(WhichHand winner) {
-        next = winner;
+    protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
+        hand.setGame(TWO_PAIRS_GAME_WEIGHT);
+        winnerResult.addTwoPairWinner(hand);
+        return true;
     }
 
     @Override
-    public WhichHand getNext() {
-        return next;
-    }
-
-    @Override
-    public boolean checkGame(Hand hand, WinnerResult winnerResult) {
-        if (isTwoPairs(hand)) {
-            winnerResult.addTwoPairWinner(hand);
-            return true;
-        } else {
-            next.checkGame(hand, winnerResult);
-            return false;
-        }
+    public boolean isNext(Hand hand) {
+        return !isTwoPairs(hand);
     }
 
     private boolean isTwoPairs(Hand hand) {

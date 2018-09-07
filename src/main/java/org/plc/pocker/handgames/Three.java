@@ -7,29 +7,19 @@ import org.plc.pocker.WinnerResult;
 import java.util.List;
 import java.util.Map;
 
-public class Three implements WhichHand {
-    private WhichHand next;
-
+public class Three extends AbstractGame {
+    private static final int THREE_GAME_WEIGHT = 4;
 
     @Override
-    public void setNext(WhichHand winner) {
-        next = winner;
+    protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
+        hand.setGame(THREE_GAME_WEIGHT);
+        winnerResult.addThreeWinner(hand);
+        return true;
     }
 
     @Override
-    public WhichHand getNext() {
-        return next;
-    }
-
-    @Override
-    public boolean checkGame(Hand hand, WinnerResult winnerResult) {
-        if (isThree(hand)) {
-            winnerResult.addThreeWinner(hand);
-            return true;
-        } else {
-            next.checkGame(hand, winnerResult);
-            return false;
-        }
+    public boolean isNext(Hand hand) {
+        return !isThree(hand);
     }
 
     private boolean isThree(Hand hand) {

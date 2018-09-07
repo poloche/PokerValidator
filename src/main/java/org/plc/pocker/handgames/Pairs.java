@@ -3,19 +3,8 @@ package org.plc.pocker.handgames;
 import org.plc.pocker.Hand;
 import org.plc.pocker.WinnerResult;
 
-public class Pairs implements WhichHand {
-    private WhichHand next;
-
-
-    @Override
-    public void setNext(WhichHand winner) {
-        next = winner;
-    }
-
-    @Override
-    public WhichHand getNext() {
-        return next;
-    }
+public class Pairs extends AbstractGame {
+    private static final int PAIR_GAME_WEIGHT = 2;
 
     @Override
     public boolean checkGame(Hand hand, WinnerResult winnerResult) {
@@ -26,5 +15,18 @@ public class Pairs implements WhichHand {
             next.checkGame(hand, winnerResult);
             return false;
         }
+    }
+
+    @Override
+    protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
+        hand.setGame(PAIR_GAME_WEIGHT);
+        winnerResult.addPairWinner(hand);
+
+        return true;
+    }
+
+    @Override
+    public boolean isNext(Hand hand) {
+        return hand.getMapCards().size()!=4;
     }
 }
