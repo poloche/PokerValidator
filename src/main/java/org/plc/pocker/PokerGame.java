@@ -1,5 +1,6 @@
 package org.plc.pocker;
 
+import org.plc.pocker.comparators.GameWeightComparator;
 import org.plc.pocker.comparators.WeightComparator;
 import org.plc.pocker.handgames.*;
 
@@ -57,7 +58,8 @@ public class PokerGame {
     }
 
     public List<Hand> getWinnerByWeight() {
-        Comparator<Hand> comparator = Collections.reverseOrder(new WeightComparator());
+        checkGames();
+        Comparator<Hand> comparator = Collections.reverseOrder(new GameWeightComparator());
         Collections.sort(hands, comparator);
         return hands;
     }

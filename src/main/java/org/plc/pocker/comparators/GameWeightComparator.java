@@ -6,6 +6,13 @@ public class GameWeightComparator implements java.util.Comparator<Hand> {
 
     @Override
     public int compare(Hand o1, Hand o2) {
-        return o1.getGameWeight().compareTo(o2.getGameWeight());
+        if (o1.getHandWeight().intValue() == o2.getHandWeight().intValue()) {
+            return 0;
+        }
+        if (o1.getHandWeight().intValue() > o2.getHandWeight().intValue()) {
+            return 1;
+        }
+        return -1;
     }
+
 }

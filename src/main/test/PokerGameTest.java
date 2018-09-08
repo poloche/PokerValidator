@@ -42,6 +42,18 @@ public class PokerGameTest {
     }
 
     @Test
+    public void testWinnerByWeightIsStraightFlush() {
+        PokerGame game = new PokerGame();
+        game.addHand("AH KD QD JD 10D");
+        game.addHand("KD QD JD 10D 9D");
+        List<Hand> winners = game.getWinnerByWeight();
+        assertNotNull(winners);
+        StraightFlush royalFlush = new StraightFlush();
+        assertTrue(royalFlush.checkGame(winners.get(0), winnerResult));
+        assertEquals("9D 10D JD QD KD", winners.get(0).showCards());
+    }
+
+    @Test
     public void testWinnerIsPoker() {
         PokerGame game = new PokerGame();
         game.addHand("AD AC AH AS 10D");

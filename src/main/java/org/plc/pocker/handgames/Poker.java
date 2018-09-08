@@ -12,17 +12,6 @@ public class Poker extends AbstractGame {
     private static final BigInteger POKER_GAME_WEIGHT = new BigInteger("8");
 
     @Override
-    public boolean checkGame(Hand hand, WinnerResult winnerResult) {
-        if (isPoker(hand)) {
-            winnerResult.addPokerWinner(hand);
-            return true;
-        } else {
-            next.checkGame(hand, winnerResult);
-            return false;
-        }
-    }
-
-    @Override
     protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
         hand.setGameWeight(POKER_GAME_WEIGHT);
         winnerResult.addPokerWinner(hand);

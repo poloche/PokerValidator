@@ -31,7 +31,7 @@ public class StraightFlush extends AbstractGame {
             if (startValue == 0) {
                 startValue = card.getNumber().intValue();
             } else {
-                if ((startValue + 1) != card.getNumber().intValue()) {
+                if ((++startValue) != card.getNumber().intValue()) {
                     return false;
                 }
             }
