@@ -9,12 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class FullHouse extends AbstractGame {
-    private static final BigInteger POKER_GAME_WEIGHT = new BigInteger("6");
+    private static final BigInteger POKER_GAME_WEIGHT = new BigInteger("3812");
 
     @Override
-    protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
-        hand.setGameWeight(POKER_GAME_WEIGHT);
-        winnerResult.addFullWinner(hand);
+    protected boolean takeResponsibility(Hand hand) {
+        hand.setGameWeight(POKER_GAME_WEIGHT.multiply(hand.getHandWeight()));
         return true;
     }
 

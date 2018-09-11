@@ -10,12 +10,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class StraightFlush extends AbstractGame {
-    private static final BigInteger STRAIGHT_FLUSH_GAME_WEIGHT = new BigInteger("9");
+    private static final BigInteger STRAIGHT_FLUSH_GAME_WEIGHT = new BigInteger("241944");
+    private BigInteger handWeight = new BigInteger("0");
 
     @Override
-    protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
-        hand.setGameWeight(STRAIGHT_FLUSH_GAME_WEIGHT);
-        winnerResult.addRoyalWinner(hand);
+    protected boolean takeResponsibility(Hand hand) {
+        hand.setGameWeight(STRAIGHT_FLUSH_GAME_WEIGHT.multiply(handWeight));
         return true;
     }
 
@@ -28,6 +28,7 @@ public class StraightFlush extends AbstractGame {
         Collections.sort(cards, new NumberComparator());
         int startValue = 0;
         for (Card card : cards) {
+            handWeight = handWeight.add(card.getNumber());
             if (startValue == 0) {
                 startValue = card.getNumber().intValue();
             } else {

@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 public class TwoPairs extends AbstractGame {
-    private static final BigInteger TWO_PAIRS_GAME_WEIGHT = new BigInteger("3");
+    private static final BigInteger TWO_PAIRS_GAME_WEIGHT = new BigInteger("12");
+    private BigInteger handWeight = new BigInteger("0");
 
     @Override
-    protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
-        hand.setGameWeight(TWO_PAIRS_GAME_WEIGHT);
-        winnerResult.addTwoPairWinner(hand);
+    protected boolean takeResponsibility(Hand hand) {
+        hand.setGameWeight(TWO_PAIRS_GAME_WEIGHT.multiply(handWeight));
         return true;
     }
 
@@ -28,11 +28,18 @@ public class TwoPairs extends AbstractGame {
             int count = 0;
             for (Map.Entry<String, List<Card>> entry : hand.getMapCards().entrySet()) {
                 if (entry.getValue().size() == 2) {
+                    calculateHandWeight(entry.getValue());
                     count++;
                 }
             }
             return count == 2;
         }
         return false;
+    }
+
+    private void calculateHandWeight(List<Card> cardList) {
+        for (Card card : cardList) {
+            handWeight = handWeight.add(card.getNumber());
+        }
     }
 }

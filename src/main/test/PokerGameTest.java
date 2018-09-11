@@ -18,18 +18,6 @@ public class PokerGameTest {
     }
 
     @Test
-    public void testWinnerIsRoyalFlush() {
-        PokerGame game = new PokerGame();
-        game.addHand("AD KD QD JD 10D");
-        game.addHand("KD QD JD 10D 9D");
-        List<Hand> winners = game.getWinner();
-        assertNotNull(winners);
-        RoyalFlush royalFlush = new RoyalFlush();
-        assertTrue(royalFlush.checkGame(winners.get(0), winnerResult));
-        assertEquals(winners.get(0).showCards(), "AD KD QD JD 10D");
-    }
-
-    @Test
     public void testWinnerByWrightIsRoyalFlush() {
         PokerGame game = new PokerGame();
         game.addHand("AD KD QD JD 10D");
@@ -37,7 +25,7 @@ public class PokerGameTest {
         List<Hand> winners = game.getWinnerByWeight();
         assertNotNull(winners);
         RoyalFlush royalFlush = new RoyalFlush();
-        assertTrue(royalFlush.checkGame(winners.get(0), winnerResult));
+        assertTrue(royalFlush.checkGame(winners.get(0)));
         assertEquals(winners.get(0).showCards(), "AD KD QD JD 10D");
     }
 
@@ -49,7 +37,7 @@ public class PokerGameTest {
         List<Hand> winners = game.getWinnerByWeight();
         assertNotNull(winners);
         StraightFlush royalFlush = new StraightFlush();
-        assertTrue(royalFlush.checkGame(winners.get(0), winnerResult));
+        assertTrue(royalFlush.checkGame(winners.get(0)));
         assertEquals("9D 10D JD QD KD", winners.get(0).showCards());
     }
 
@@ -57,12 +45,12 @@ public class PokerGameTest {
     public void testWinnerIsPoker() {
         PokerGame game = new PokerGame();
         game.addHand("AD AC AH AS 10D");
-        game.addHand("KD QD JD 10D 9D");
+        game.addHand("KD QD JH 10D 9D");
         List<Hand> winners = game.getWinnerByWeight();
         assertNotNull(winners);
 
         Poker poker = new Poker();
-        assertTrue(poker.checkGame(winners.get(0), winnerResult));
+        assertTrue(poker.checkGame(winners.get(0)));
         assertEquals(winners.get(0).showCards(), "AD AC AH AS 10D");
     }
 
@@ -71,11 +59,11 @@ public class PokerGameTest {
         PokerGame game = new PokerGame();
         game.addHand("KD KC KH KS 9D");
         game.addHand("AD AC AH AS 10D");
-        List<Hand> winners = game.getWinner();
+        List<Hand> winners = game.getWinnerByWeight();
         assertNotNull(winners);
 
         Poker poker = new Poker();
-        assertTrue(poker.checkGame(winners.get(0), winnerResult));
+        assertTrue(poker.checkGame(winners.get(0)));
         assertEquals("AD AC AH AS 10D", winners.get(0).showCards());
     }
 
@@ -83,12 +71,12 @@ public class PokerGameTest {
     public void testWinnerIsFull(){
         PokerGame game = new PokerGame();
         game.addHand("AD AC AH 10S 10D");
-        game.addHand("KD QD JD 1D 9D");
-        List<Hand> winners = game.getWinner();
+        game.addHand("KD QD JH 1D 9D");
+        List<Hand> winners = game.getWinnerByWeight();
         assertNotNull(winners);
 
         FullHouse fullHouse = new FullHouse();
-        assertTrue(fullHouse.checkGame(winners.get(0), winnerResult));
+        assertTrue(fullHouse.checkGame(winners.get(0)));
         assertEquals("AD AC AH 10S 10D", winners.get(0).showCards());
     }
 
@@ -96,38 +84,51 @@ public class PokerGameTest {
     public void testWinnerIsThree(){
         PokerGame game = new PokerGame();
         game.addHand("AD AC AH 8S 10D");
-        game.addHand("KD QD JD 1D 9D");
-        List<Hand> winners = game.getWinner();
+        game.addHand("KD QD JH 1D 9D");
+        List<Hand> winners = game.getWinnerByWeight();
         assertNotNull(winners);
 
         Three three = new Three();
-        assertTrue(three.checkGame(winners.get(0), winnerResult));
-        assertEquals("AD AC AH 8S 10D", winners.get(0).showCards());
+        assertTrue(three.checkGame(winners.get(0)));
+        assertEquals("8S 10D AD AC AH", winners.get(0).showCards());
     }
 
     @Test
     public void testWinnerIsTwoPairs(){
         PokerGame game = new PokerGame();
         game.addHand("AD AC 8H 10S 10D");
-        game.addHand("KD KD JD 1D 9D");
-        List<Hand> winners = game.getWinner();
+        game.addHand("KD KD JH 1D 9D");
+        List<Hand> winners = game.getWinnerByWeight();
         assertNotNull(winners);
 
         TwoPairs twoPairs = new TwoPairs();
-        assertTrue(twoPairs.checkGame(winners.get(0), winnerResult));
-        assertEquals("AD AC 8H 10S 10D", winners.get(0).showCards());
+        assertTrue(twoPairs.checkGame(winners.get(0)));
+        assertEquals("8H 10S 10D AD AC", winners.get(0).showCards());
     }
 
     @Test
     public void testWinnerIsPairs(){
         PokerGame game = new PokerGame();
         game.addHand("AD AC 8H 1S 10D");
-        game.addHand("KD 5D JD 1D 9D");
-        List<Hand> winners = game.getWinner();
+        game.addHand("KD 5D JH 1D 9D");
+        List<Hand> winners = game.getWinnerByWeight();
         assertNotNull(winners);
 
         Pairs pairs = new Pairs();
-        assertTrue(pairs.checkGame(winners.get(0), winnerResult));
-        assertEquals("AD AC 8H 1S 10D", winners.get(0).showCards());
+        assertTrue(pairs.checkGame(winners.get(0)));
+        assertEquals("1S 8H 10D AD AC", winners.get(0).showCards());
+    }
+
+    @Test
+    public void testWinnerIsPairsHigh(){
+        PokerGame game = new PokerGame();
+        game.addHand("AD AC 2H 4S 3D");
+        game.addHand("KD KC 2H 4S 3D");
+        List<Hand> winners = game.getWinnerByWeight();
+        assertNotNull(winners);
+
+        Pairs pairs = new Pairs();
+        assertTrue(pairs.checkGame(winners.get(0)));
+        assertEquals("2H 3D 4S AD AC", winners.get(0).showCards());
     }
 }

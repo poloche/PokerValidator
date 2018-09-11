@@ -1,7 +1,6 @@
 package org.plc.pocker;
 
 import org.plc.pocker.comparators.GameWeightComparator;
-import org.plc.pocker.comparators.WeightComparator;
 import org.plc.pocker.handgames.*;
 
 import java.util.ArrayList;
@@ -29,6 +28,8 @@ public class PokerGame {
         StraightFlush straightFlush = new StraightFlush();
         Poker poker = new Poker();
         FullHouse fullHouse = new FullHouse();
+        Flush flush = new Flush();
+        Straight straight = new Straight();
         Three three = new Three();
         TwoPairs twoPairs = new TwoPairs();
         Pairs pairs = new Pairs();
@@ -37,14 +38,16 @@ public class PokerGame {
         royalFlush.setNext(straightFlush);
         straightFlush.setNext(poker);
         poker.setNext(fullHouse);
-        fullHouse.setNext(three);
+        fullHouse.setNext(flush);
+        flush.setNext(straight);
+        straight.setNext(three);
         three.setNext(twoPairs);
         twoPairs.setNext(pairs);
         pairs.setNext(highCard);
 
     }
 
-    public List<Hand> getWinner() {
+    public List<Hand> getWinnerByWeight() {
         if (hands.isEmpty()) {
             System.out.println("We need at least one hand");
             return null;
@@ -54,24 +57,15 @@ public class PokerGame {
             return hands;
 
         checkGames();
-        return checkRules();
-    }
-
-    public List<Hand> getWinnerByWeight() {
-        checkGames();
         Comparator<Hand> comparator = Collections.reverseOrder(new GameWeightComparator());
         Collections.sort(hands, comparator);
         return hands;
     }
 
-    private List<Hand> checkRules() {
-        return winnerResult.getWinners();
-    }
-
     private void checkGames() {
 
         for (Hand hand : hands) {
-            royalFlush.checkGame(hand, winnerResult);
+            royalFlush.checkGame(hand);
         }
     }
 }

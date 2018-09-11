@@ -46,7 +46,7 @@ public class Hand {
     }
 
     public void setGameWeight(BigInteger gameWeight) {
-        this.gameWeight = gameWeight.multiply(getHandWeight());
+        this.gameWeight = gameWeight;
     }
 
     public BigInteger getGameWeight() {

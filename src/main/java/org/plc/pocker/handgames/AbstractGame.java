@@ -8,7 +8,7 @@ import org.plc.pocker.WinnerResult;
 import java.util.List;
 
 public abstract class AbstractGame implements WhichHand {
-    WhichHand next;
+    private WhichHand next;
 
     @Override
     public void setNext(WhichHand winner) {
@@ -22,19 +22,18 @@ public abstract class AbstractGame implements WhichHand {
 
 
     @Override
-    public boolean checkGame(Hand hand, WinnerResult winnerResult) {
+    public boolean checkGame(Hand hand) {
         if (isNext(hand)) {
-            return next.checkGame(hand, winnerResult);
+            return next.checkGame(hand);
         } else {
-            return takeResponsibility(hand, winnerResult);
+            return takeResponsibility(hand);
         }
     }
 
-    protected abstract boolean takeResponsibility(Hand hand, WinnerResult winnerResult);
+    protected abstract boolean takeResponsibility(Hand hand);
 
     public abstract boolean isNext(Hand hand);
-
-    boolean hasAllSameSuit(List<Card> cards) {
+    protected boolean hasAllSameSuit(List<Card> cards) {
         Suit suit = null;
         for (Card card : cards) {
             if (suit == null) {

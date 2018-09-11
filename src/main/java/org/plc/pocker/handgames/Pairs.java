@@ -1,34 +1,32 @@
 package org.plc.pocker.handgames;
 
+import org.plc.pocker.Card;
 import org.plc.pocker.Hand;
 import org.plc.pocker.WinnerResult;
 
 import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
 
 public class Pairs extends AbstractGame {
-    private static final BigInteger PAIR_GAME_WEIGHT = new BigInteger("2");
+    private static final BigInteger PAIR_GAME_WEIGHT = new BigInteger("5");
 
     @Override
-    public boolean checkGame(Hand hand, WinnerResult winnerResult) {
-        if (hand.getMapCards().size()==4) {
-            winnerResult.addPairWinner(hand);
-            return true;
-        } else {
-            next.checkGame(hand, winnerResult);
-            return false;
+    protected boolean takeResponsibility(Hand hand) {
+        BigInteger handWeight = new BigInteger("0");
+        for (Map.Entry<String, List<Card>> cardsEntry : hand.getMapCards().entrySet()) {
+            if(cardsEntry.getValue().size()==2){
+                for (Card card : cardsEntry.getValue()) {
+                    handWeight = handWeight.add(card.getNumber());
+                }
+            }
         }
-    }
-
-    @Override
-    protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
-        hand.setGameWeight(PAIR_GAME_WEIGHT);
-        winnerResult.addPairWinner(hand);
-
+        hand.setGameWeight(PAIR_GAME_WEIGHT.multiply(handWeight));
         return true;
     }
 
     @Override
     public boolean isNext(Hand hand) {
-        return hand.getMapCards().size()!=4;
+        return hand.getMapCards().size() != 4;
     }
 }

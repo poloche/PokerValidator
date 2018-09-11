@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 public class Three extends AbstractGame {
-    private static final BigInteger THREE_GAME_WEIGHT = new BigInteger("4");
+    private static final BigInteger THREE_GAME_WEIGHT = new BigInteger("110");
+
+    private BigInteger handWeight = new BigInteger("0");
 
     @Override
-    protected boolean takeResponsibility(Hand hand, WinnerResult winnerResult) {
-        hand.setGameWeight(THREE_GAME_WEIGHT);
-        winnerResult.addThreeWinner(hand);
+    protected boolean takeResponsibility(Hand hand) {
+        hand.setGameWeight(THREE_GAME_WEIGHT.multiply(handWeight));
         return true;
     }
 
@@ -27,10 +28,17 @@ public class Three extends AbstractGame {
         if (hand.getMapCards().size() == 3) {
             for (Map.Entry<String, List<Card>> cards : hand.getMapCards().entrySet()) {
                 if (cards.getValue().size() == 3) {
+                    calculateHandWeight(cards.getValue());
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private void calculateHandWeight(List<Card> cardList) {
+        for (Card card : cardList) {
+            handWeight = handWeight.add(card.getNumber());
+        }
     }
 }
