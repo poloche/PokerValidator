@@ -7,16 +7,29 @@ import java.util.List;
 
 public final class Deck {
     private static final int MAX_CARDS_BY_SUIT = 13;
-    private List<Suit> validSuits = Arrays.asList(Suit.Club, Suit.Diamond, Suit.Heart, Suit.Spade);
     private final List<Card> cards;
     private int current;
 
     public Deck() {
         List<Card> generated = new ArrayList<>();
 
+        List<Suit> validSuits = Arrays.asList(Suit.Club, Suit.Diamond, Suit.Heart, Suit.Spade);
         for (Suit suit : validSuits) {
             for (int i = 1; i <= MAX_CARDS_BY_SUIT; i++) {
-                Card card = new Card(String.valueOf(i) + suit.simbol);
+                String letter = String.valueOf(i);
+                if (i == 11) {
+                    letter = "J";
+                }
+
+                if (i == 12) {
+                    letter = "Q";
+                }
+
+                if (i == 13) {
+                    letter = "K";
+                }
+
+                Card card = new Card(letter + suit.simbol);
                 generated.add(card);
             }
         }
