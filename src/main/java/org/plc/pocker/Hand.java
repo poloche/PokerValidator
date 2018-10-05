@@ -2,7 +2,10 @@ package org.plc.pocker;
 
 import java.math.BigInteger;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Hand {
     private List<Card> cards;
@@ -21,7 +24,13 @@ public class Hand {
         for (String card : arrayCards) {
             cards.add(new Card(card));
         }
+    }
 
+    public Hand() {
+        cards = new ArrayList<>();
+    }
+
+    public void sortCardsInMap() {
         mapCards = new HashMap<>();
         for (Card card : cards) {
             if (!mapCards.containsKey(card.getSymbol())) {
@@ -57,7 +66,7 @@ public class Hand {
         return mapCards;
     }
 
-    public String showCards(){
+    public String showCards() {
         StringBuilder handString = new StringBuilder("");
         for (Card card : cards) {
             handString.append(card.getSymbol());
@@ -65,5 +74,14 @@ public class Hand {
             handString.append(" ");
         }
         return handString.toString().trim();
+    }
+
+    public void addCard(Card card) {
+        cards.add(card);
+        sortCardsInMap();
+    }
+
+    public void removeCards(List<Card> cards) {
+        cards.removeAll(cards);
     }
 }

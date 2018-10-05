@@ -1,13 +1,17 @@
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.plc.pocker.Hand;
+import org.plc.pocker.Player;
 import org.plc.pocker.PokerGame;
 import org.plc.pocker.WinnerResult;
-import org.plc.pocker.handgames.*;
+import org.plc.pocker.exceptions.ExceededException;
+import org.plc.pocker.exceptions.InvalidGameState;
+import org.plc.pocker.game.ClassicPokerGameConfiguration;
+import org.plc.pocker.game.PlayerIntelligence;
 
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PokerGameTest {
     private static WinnerResult winnerResult = new WinnerResult();
@@ -18,117 +22,33 @@ public class PokerGameTest {
     }
 
     @Test
-    public void testWinnerByWrightIsRoyalFlush() {
-        PokerGame game = new PokerGame();
-        game.addHand("AD KD QD JD 10D");
-        game.addHand("KD QD JD 10D 9D");
-        List<Hand> winners = game.getWinnerByWeight();
-        assertNotNull(winners);
-        RoyalFlush royalFlush = new RoyalFlush();
-        assertTrue(royalFlush.checkGame(winners.get(0)));
-        assertEquals(winners.get(0).showCards(), "AD KD QD JD 10D");
-    }
+    public void testTwoPlayers() throws ExceededException, InvalidGameState {
+        final Player paolo = new Player("Paolo", 100);
+        Player rolo = new Player("Rolando", 100);
+        ClassicPokerGameConfiguration configuration = new ClassicPokerGameConfiguration();
+        final PokerGame game = new PokerGame(configuration);
 
-    @Test
-    public void testWinnerByWeightIsStraightFlush() {
-        PokerGame game = new PokerGame();
-        game.addHand("AH KD QD JD 10D");
-        game.addHand("KD QD JD 10D 9D");
-        List<Hand> winners = game.getWinnerByWeight();
-        assertNotNull(winners);
-        StraightFlush royalFlush = new StraightFlush();
-        assertTrue(royalFlush.checkGame(winners.get(0)));
-        assertEquals("9D 10D JD QD KD", winners.get(0).showCards());
-    }
+        game.start();
+        game.addPlayer(paolo);
+        game.addPlayer(rolo);
 
-    @Test
-    public void testWinnerIsPoker() {
-        PokerGame game = new PokerGame();
-        game.addHand("AD AC AH AS 10D");
-        game.addHand("KD QD JH 10D 9D");
-        List<Hand> winners = game.getWinnerByWeight();
-        assertNotNull(winners);
+        paolo.setHand(game.pickCards(paolo));
+        rolo.setHand(game.pickCards(rolo));
 
-        Poker poker = new Poker();
-        assertTrue(poker.checkGame(winners.get(0)));
-        assertEquals(winners.get(0).showCards(), "AD AC AH AS 10D");
-    }
 
-    @Test
-    public void testWinnerIsPokerWeight(){
-        PokerGame game = new PokerGame();
-        game.addHand("KD KC KH KS 9D");
-        game.addHand("AD AC AH AS 10D");
-        List<Hand> winners = game.getWinnerByWeight();
-        assertNotNull(winners);
+        game.payBedToContinue(paolo, 10, PlayerIntelligence.getCards(paolo));
+        TimerTask waitForPlayers = new TimerTask() {
+            @Override
+            public void run() {
+                assertEquals(paolo.getId(), game.getWinners().get(0).getId());
+            }
+        };
 
-        Poker poker = new Poker();
-        assertTrue(poker.checkGame(winners.get(0)));
-        assertEquals("AD AC AH AS 10D", winners.get(0).showCards());
-    }
+        Timer timer = new Timer("No Players registered timeout");
 
-    @Test
-    public void testWinnerIsFull(){
-        PokerGame game = new PokerGame();
-        game.addHand("AD AC AH 10S 10D");
-        game.addHand("KD QD JH 1D 9D");
-        List<Hand> winners = game.getWinnerByWeight();
-        assertNotNull(winners);
+        long delay = 11000L;
+        timer.schedule(waitForPlayers, delay);
 
-        FullHouse fullHouse = new FullHouse();
-        assertTrue(fullHouse.checkGame(winners.get(0)));
-        assertEquals("AD AC AH 10S 10D", winners.get(0).showCards());
-    }
 
-    @Test
-    public void testWinnerIsThree(){
-        PokerGame game = new PokerGame();
-        game.addHand("AD AC AH 8S 10D");
-        game.addHand("KD QD JH 1D 9D");
-        List<Hand> winners = game.getWinnerByWeight();
-        assertNotNull(winners);
-
-        Three three = new Three();
-        assertTrue(three.checkGame(winners.get(0)));
-        assertEquals("8S 10D AD AC AH", winners.get(0).showCards());
-    }
-
-    @Test
-    public void testWinnerIsTwoPairs(){
-        PokerGame game = new PokerGame();
-        game.addHand("AD AC 8H 10S 10D");
-        game.addHand("KD KD JH 1D 9D");
-        List<Hand> winners = game.getWinnerByWeight();
-        assertNotNull(winners);
-
-        TwoPairs twoPairs = new TwoPairs();
-        assertTrue(twoPairs.checkGame(winners.get(0)));
-        assertEquals("8H 10S 10D AD AC", winners.get(0).showCards());
-    }
-
-    @Test
-    public void testWinnerIsPairs(){
-        PokerGame game = new PokerGame();
-        game.addHand("AD AC 8H 1S 10D");
-        game.addHand("KD 5D JH 1D 9D");
-        List<Hand> winners = game.getWinnerByWeight();
-        assertNotNull(winners);
-
-        Pairs pairs = new Pairs();
-        assertTrue(pairs.checkGame(winners.get(0)));
-        assertEquals("1S 8H 10D AD AC", winners.get(0).showCards());
-    }
-
-    @Test
-    public void testWinnerIsPairsHigh(){
-        PokerGame game = new PokerGame();
-        game.addHand("AD AC 2H 4S 3D");
-        game.addHand("KD KC 2H 4S 3D");
-        List<Hand> winners = game.getWinnerByWeight();
-        assertNotNull(winners);
-
-        Pairs pairs = new Pairs();
-        assertTrue(pairs.checkGame(winners.get(0)));
-        assertEquals("2H 3D 4S AD AC", winners.get(0).showCards());
     }
 }

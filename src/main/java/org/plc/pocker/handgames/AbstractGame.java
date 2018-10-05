@@ -1,9 +1,6 @@
 package org.plc.pocker.handgames;
 
-import org.plc.pocker.Card;
-import org.plc.pocker.Hand;
-import org.plc.pocker.Suit;
-import org.plc.pocker.WinnerResult;
+import org.plc.pocker.*;
 
 import java.util.List;
 
@@ -22,17 +19,17 @@ public abstract class AbstractGame implements WhichHand {
 
 
     @Override
-    public boolean checkGame(Hand hand) {
-        if (isNext(hand)) {
-            return next.checkGame(hand);
+    public boolean checkGame(Player player) {
+        if (isNext(player)) {
+            return next.checkGame(player);
         } else {
-            return takeResponsibility(hand);
+            return takeResponsibility(player);
         }
     }
 
-    protected abstract boolean takeResponsibility(Hand hand);
+    protected abstract boolean takeResponsibility(Player player);
 
-    public abstract boolean isNext(Hand hand);
+    public abstract boolean isNext(Player player);
     protected boolean hasAllSameSuit(List<Card> cards) {
         Suit suit = null;
         for (Card card : cards) {

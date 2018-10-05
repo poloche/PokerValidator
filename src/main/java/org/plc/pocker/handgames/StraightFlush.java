@@ -1,11 +1,11 @@
 package org.plc.pocker.handgames;
 
 import org.plc.pocker.Card;
-import org.plc.pocker.Hand;
-import org.plc.pocker.WinnerResult;
+import org.plc.pocker.Player;
 import org.plc.pocker.comparators.NumberComparator;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,14 +14,15 @@ public class StraightFlush extends AbstractGame {
     private BigInteger handWeight = new BigInteger("0");
 
     @Override
-    protected boolean takeResponsibility(Hand hand) {
-        hand.setGameWeight(STRAIGHT_FLUSH_GAME_WEIGHT.multiply(handWeight));
+    protected boolean takeResponsibility(Player player) {
+        player.getHand().setGameWeight(STRAIGHT_FLUSH_GAME_WEIGHT.multiply(handWeight));
+        player.setCardsToChange(new ArrayList<Card>());
         return true;
     }
 
     @Override
-    public boolean isNext(Hand hand) {
-        return !hasAllSameSuit(hand.getCards()) || !isInSequence(hand.getCards());
+    public boolean isNext(Player player) {
+        return !hasAllSameSuit(player.getHand().getCards()) || !isInSequence(player.getHand().getCards());
     }
 
     private boolean isInSequence(List<Card> cards) {

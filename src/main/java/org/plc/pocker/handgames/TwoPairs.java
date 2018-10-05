@@ -2,7 +2,7 @@ package org.plc.pocker.handgames;
 
 import org.plc.pocker.Card;
 import org.plc.pocker.Hand;
-import org.plc.pocker.WinnerResult;
+import org.plc.pocker.Player;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -11,16 +11,18 @@ import java.util.Map;
 public class TwoPairs extends AbstractGame {
     private static final BigInteger TWO_PAIRS_GAME_WEIGHT = new BigInteger("12");
     private BigInteger handWeight = new BigInteger("0");
+    private List<Card> lowerCards;
 
     @Override
-    protected boolean takeResponsibility(Hand hand) {
-        hand.setGameWeight(TWO_PAIRS_GAME_WEIGHT.multiply(handWeight));
+    protected boolean takeResponsibility(Player player) {
+        player.getHand().setGameWeight(TWO_PAIRS_GAME_WEIGHT.multiply(handWeight));
+        player.setCardsToChange(lowerCards);
         return true;
     }
 
     @Override
-    public boolean isNext(Hand hand) {
-        return !isTwoPairs(hand);
+    public boolean isNext(Player player) {
+        return !isTwoPairs(player.getHand());
     }
 
     private boolean isTwoPairs(Hand hand) {
@@ -30,6 +32,8 @@ public class TwoPairs extends AbstractGame {
                 if (entry.getValue().size() == 2) {
                     calculateHandWeight(entry.getValue());
                     count++;
+                } else {
+                    lowerCards = entry.getValue();
                 }
             }
             return count == 2;
