@@ -84,4 +84,14 @@ public class Hand {
     public void removeCards(List<Card> cards) {
         cards.removeAll(cards);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder handString = new StringBuilder();
+        for (Card card : cards) {
+            handString.append(card);
+            handString.append(",");
+        }
+        return handString.toString();
+    }
 }

@@ -16,4 +16,5 @@ public abstract class GameConfiguration {
     public abstract int getCardsByPlayer();
 
     public abstract BigInteger getGameBet();
+    public abstract int getMaxDealRounds();
 }

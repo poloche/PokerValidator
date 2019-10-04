@@ -61,4 +61,9 @@ public class Card {
     public String getSymbol() {
         return symbol;
     }
+
+    @Override
+    public String toString() {
+        return getSymbol();
+    }
 }

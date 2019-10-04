@@ -16,7 +16,7 @@ public class ClassicPokerGameValidator {
     }
 
     public void setPlayers(List<Player> players) {
-        this.players = Collections.unmodifiableList(players);
+        this.players = players;
     }
 
     private AbstractGame configureGameRules() {
@@ -55,7 +55,7 @@ public class ClassicPokerGameValidator {
         checkGames();
         Comparator<Player> comparator = Collections.reverseOrder(new GameWeightComparator());
         Collections.sort(players, comparator);
-        return players;
+        return  Collections.unmodifiableList(players);
     }
 
     private void checkGames() {

@@ -31,4 +31,9 @@ public class ClassicPokerGameConfiguration extends GameConfiguration {
     public BigInteger getGameBet() {
         return new BigInteger("10");
     }
+
+    @Override
+    public int getMaxDealRounds() {
+        return 3;
+    }
 }

@@ -8,6 +8,8 @@ import org.plc.pocker.exceptions.InvalidGameState;
 import org.plc.pocker.game.ClassicPokerGameConfiguration;
 import org.plc.pocker.game.PlayerIntelligence;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -49,6 +51,27 @@ public class PokerGameTest {
         long delay = 11000L;
         timer.schedule(waitForPlayers, delay);
 
+
+    }
+
+    @Test
+    public void testPokerGame() throws InvalidGameState, ExceededException, InterruptedException {
+        ClassicPokerGameConfiguration configuration = new ClassicPokerGameConfiguration();
+        PokerGame game = new PokerGame(configuration);
+        game.start();
+
+        Player paolo = new Player("Paolo", 100);
+        Player fernando = new Player("Fernando", 100);
+
+        game.addPlayer(paolo);
+        game.addPlayer(fernando);
+        // waiting for pay to see
+        Thread.sleep(10000L);
+        List<Player> winners = game.getWinners();
+        for (Player player:             winners) {
+            System.out.println(player.getName());
+            System.out.println(player.getHand());
+        }
 
     }
 }

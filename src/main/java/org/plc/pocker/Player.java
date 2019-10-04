@@ -16,6 +16,8 @@ public class Player {
     private List<Integer> beds;
     private boolean enabled;
     private List<Card> cardsToChange;
+    private boolean hasPayToSee = false;
+    private boolean enabledWithBet = false;
 
     public Player(String name, double money) {
         id = UUID.randomUUID();
@@ -25,6 +27,7 @@ public class Player {
         hand = new Hand();
         enabled = false;
         beds = new ArrayList<>();
+        enabledWithBet = true;
     }
 
     public void addCard(Card card) {
@@ -43,8 +46,16 @@ public class Player {
         if (money - bet < 0) {
             throw new ExceededException();
         }
-        beds.add(Integer.valueOf(bet));
+        beds.add(bet);
         enabled = true;
+    }
+
+    public void setPayToSee(int  payToSeeAmount) throws ExceededException {
+        if(payToSeeAmount<=0){
+            return;
+        }
+        addBet(payToSeeAmount);
+        this.hasPayToSee = true;
     }
 
     public List<Integer> getBeds() {
@@ -107,5 +118,25 @@ public class Player {
 
     public void checkGame() {
 
+    }
+
+    public int getLastBet() {
+        return beds.get(beds.size()-1);
+    }
+
+    public boolean hasPayToSee() {
+        return hasPayToSee;
+    }
+
+    public void setEnabledWithBet(boolean enabledWithBet) {
+        this.enabledWithBet = enabledWithBet;
+    }
+
+    public boolean isEnabledWithBet() {
+        return enabledWithBet;
+    }
+
+    public boolean requireCardsChange() {
+        return false;
     }
 }
