@@ -1,20 +1,29 @@
 package org.plc.pocker.game;
 
-import org.plc.pocker.Deck;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.math.BigInteger;
+import java.io.InputStream;
 
-public abstract class GameConfiguration {
+public abstract class GameConfiguration<T> {
+    private String yamlFileName;
+    private T configuration;
 
+    GameConfiguration(String yamlFileName, T configuration) {
+        this.yamlFileName = yamlFileName;
+        this.configuration = configuration;
+        loadConfiguration();
+    }
 
-    public abstract ClassicPokerGameValidator configureWinnerRules();
+    public T getConfiguration() {
+        return configuration;
+    }
 
-    public abstract int getNumberOfPlayers();
-
-    public abstract Deck getDeck();
-
-    public abstract int getCardsByPlayer();
-
-    public abstract BigInteger getGameBet();
-    public abstract int getMaxDealRounds();
+    private void loadConfiguration() {
+        Yaml yaml = new Yaml(new Constructor(configuration.getClass()));
+        InputStream inputStream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream(yamlFileName);
+        configuration = yaml.load(inputStream);
+    }
 }

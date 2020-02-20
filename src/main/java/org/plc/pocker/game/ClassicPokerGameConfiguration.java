@@ -1,39 +1,51 @@
 package org.plc.pocker.game;
 
 import org.plc.pocker.Deck;
+import org.plc.pocker.game.configuration.ClassicPokerConfiguration;
 
 import java.math.BigInteger;
 
-public class ClassicPokerGameConfiguration extends GameConfiguration {
-    Deck deck;
+public class ClassicPokerGameConfiguration extends GameConfiguration<ClassicPokerConfiguration> {
+    public static final long WAITING_FOR_PLAYERS_DELAY = 10000L;
+    public static final long ACCEPTING_BEDS_DELAY = 1000L;
+    public static final long PAY_TO_SEE_DELAY = 1000L;
+    private Deck deck;
+    private ClassicPokerConfiguration configuration;
+    public ClassicPokerGameConfiguration(){
+        super("GameConfiguration.yaml", new ClassicPokerConfiguration());
+        configuration = getConfiguration();
+    }
 
-    @Override
+
     public ClassicPokerGameValidator configureWinnerRules() {
         return new ClassicPokerGameValidator();
     }
 
-    @Override
+
     public int getNumberOfPlayers() {
-        return 2;
+        return configuration.getNumberOfPlayers();
     }
 
-    @Override
+
     public Deck getDeck() {
-        return deck == null ? new Deck() : deck;
+        if (deck == null) {
+            deck = new Deck();
+        }
+        return deck;
     }
 
-    @Override
+
     public int getCardsByPlayer() {
-        return 5;
+        return configuration.getCardsByPlayer();
     }
 
-    @Override
+
     public BigInteger getGameBet() {
-        return new BigInteger("10");
+        return new BigInteger(String.valueOf(configuration.getBeat()));
     }
 
-    @Override
+
     public int getMaxDealRounds() {
-        return 3;
+        return configuration.getDealRounds();
     }
 }

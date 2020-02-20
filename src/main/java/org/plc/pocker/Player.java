@@ -1,8 +1,10 @@
 package org.plc.pocker;
 
 import org.plc.pocker.exceptions.ExceededException;
+import org.plc.pocker.game.ClassicPokerGameValidator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +20,7 @@ public class Player {
     private List<Card> cardsToChange;
     private boolean hasPayToSee = false;
     private boolean enabledWithBet = false;
+    private ClassicPokerGameValidator rules;
 
     public Player(String name, double money) {
         id = UUID.randomUUID();
@@ -32,6 +35,10 @@ public class Player {
 
     public void addCard(Card card) {
         hand.addCard(card);
+    }
+
+    public void addCard(Card newCard, Card toReplaceCard) {
+        hand.replace(newCard, toReplaceCard);
     }
 
     public Hand getHand() {
@@ -116,10 +123,6 @@ public class Player {
         this.hand = hand;
     }
 
-    public void checkGame() {
-
-    }
-
     public int getLastBet() {
         return beds.get(beds.size()-1);
     }
@@ -138,5 +141,14 @@ public class Player {
 
     public boolean requireCardsChange() {
         return false;
+    }
+
+    public final void addGameRules(final ClassicPokerGameValidator rules) {
+        this.rules = rules;
+    }
+
+    public void checkGame(){
+        rules.setPlayers(Arrays.asList(this));
+        rules.checkGames();
     }
 }

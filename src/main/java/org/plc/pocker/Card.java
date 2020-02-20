@@ -66,4 +66,13 @@ public class Card {
     public String toString() {
         return getSymbol();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Card) {
+            Card other = (Card) obj;
+            return symbol.equals(other.symbol) && suit.equals(other.suit);
+        }
+        return false;
+    }
 }

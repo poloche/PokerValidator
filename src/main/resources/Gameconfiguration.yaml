@@ -1,0 +1,9 @@
+#poker:
+numberOfPlayers: 2
+dealRounds: 3
+cardsByPlayer: 5
+beat: 10
+delay:
+  acceptingBeats: 1000
+  playersChangeCards: 1000
+  registerPlayers: 1000

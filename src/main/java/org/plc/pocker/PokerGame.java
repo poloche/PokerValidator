@@ -2,6 +2,7 @@ package org.plc.pocker;
 
 import org.plc.pocker.exceptions.ExceededException;
 import org.plc.pocker.exceptions.InvalidGameState;
+import org.plc.pocker.game.ClassicPokerGameConfiguration;
 import org.plc.pocker.game.ClassicPokerGameValidator;
 import org.plc.pocker.game.GameConfiguration;
 import org.slf4j.Logger;
@@ -12,11 +13,8 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class PokerGame {
-Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private static final long WAITING_FOR_PLAYERS_DELAY = 1000L;
-    private static final long ACCEPTING_BEDS_DELAY = 1000L;
-    private static final long PAY_TO_SEE_DELAY = 1000L;
     private int globalBet = 0;
     private int currentDealRound = 0;
 
@@ -41,11 +39,22 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
         }
     }
 
+    public enum StopType {
+        NO_PLAYERS("No players Registered"),
+        NO_BETS("No one player put bets in the first Round, game finish without winners"),
+        NO_MORE_CHANGES_REQUIRED("No one player required to change cards, they are ready to see the winner");
+        private final String description;
+
+        StopType(String description) {
+            this.description = description;
+        }
+    }
+
     private HashMap<UUID, Player> players;
     private WinnerResult winnerResult;
 
     private ClassicPokerState currentState;
-    private GameConfiguration configuration;
+    private ClassicPokerGameConfiguration configuration;
     private BigDecimal maxBetGame = new BigDecimal(0);
 
     private TimerTask waitForBets = new TimerTask() {
@@ -60,7 +69,7 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
         public void run() {
             LOGGER.info("PayToSee timeout, waiting some more time for Players change cards");
             currentState = ClassicPokerState.WAITING_FOR_PLAYERS_CHANGE_CARDS;
-            backgroundTask.schedule(waitingForCardChange, WAITING_FOR_PLAYERS_DELAY);
+            backgroundTask.schedule(waitingForCardChange, configuration.getConfiguration().getDelay().getAcceptingBeats());
         }
     };
 
@@ -77,16 +86,16 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
         public void run() {
             boolean runChangeCard = false;
             for (Player player : players.values()) {
-                if(player.requireCardsChange()){
+                if (player.requireCardsChange()) {
                     runChangeCard = true;
                 }
             }
-            if(runChangeCard){
+            if (runChangeCard) {
                 LOGGER.info("Some changes are required, going to change cards");
                 changeCards();
-            }else {
-                LOGGER.info("Players does not required card changes, finishing the game");
-                stopGame(0);
+            } else {
+                LOGGER.info("Players does not required card changes, finishing the game in round {}", currentDealRound);
+                stopGame(StopType.NO_MORE_CHANGES_REQUIRED);
             }
         }
     };
@@ -95,7 +104,7 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     }
 
-    public PokerGame(GameConfiguration configuration) {
+    public PokerGame(ClassicPokerGameConfiguration configuration) {
 
         this.players = new HashMap<>();
         winnerResult = new WinnerResult();
@@ -108,13 +117,13 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     public void start() {
         currentState = ClassicPokerState.OPEN;
         LOGGER.info("Starting the game");
-        backgroundTask.schedule(waitForPlayers, WAITING_FOR_PLAYERS_DELAY);
+        backgroundTask.schedule(waitForPlayers, configuration.getConfiguration().getDelay().getRegisterPlayers());
         currentState = ClassicPokerState.WAITING_FOR_PLAYERS;
     }
 
     private void checkForStopGame() {
         if (players.isEmpty()) {
-            stopGame(0);
+            stopGame(StopType.NO_PLAYERS);
         } else {
             LOGGER.info("We have {} players registered, starting deal", players.size());
             dealCards();
@@ -138,7 +147,7 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
             if (!ClassicPokerState.STARTED.equals(currentState)) {
                 throw new InvalidGameState(ClassicPokerState.STARTED, currentState);
             } else {
-                System.out.println("Can't add more players the game was already started");
+                LOGGER.info("Can't add more players the game was already started");
             }
         }
     }
@@ -149,7 +158,7 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
                 globalBet = player.getLastBet();
                 currentState = ClassicPokerState.ACCEPTING_BEDS;
 
-                backgroundTask.schedule(waitForBets, ACCEPTING_BEDS_DELAY);
+                backgroundTask.schedule(waitForBets, configuration.getConfiguration().getDelay().getAcceptingBeats());
             }
         } else {
             System.out.println("cannot deal cards the game is " + currentState);
@@ -182,8 +191,8 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private void dealCards() {
         if (ClassicPokerState.DEALING.equals(currentState) && currentDealRound < configuration.getMaxDealRounds()) {
+            LOGGER.info("dealing round {} of {}", currentDealRound, configuration.getMaxDealRounds());
             currentDealRound++;
-            LOGGER.info("dealing round {} ", currentDealRound);
             for (Player player : players.values()) {
                 if (player.isEnabledWithBet()) {
                     for (int cardNumber = 0; cardNumber < configuration.getCardsByPlayer(); cardNumber++) {
@@ -193,7 +202,7 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
                 }
             }
             currentState = ClassicPokerState.WAITING_FOR_PAY_TO_SEE;
-            backgroundTask.schedule(waitForPyToSee, ACCEPTING_BEDS_DELAY);
+            backgroundTask.schedule(waitForPyToSee, configuration.getConfiguration().getDelay().getAcceptingBeats());
         } else {
             if (currentDealRound == configuration.getMaxDealRounds()) {
                 currentState = ClassicPokerState.FINISHED;
@@ -203,23 +212,31 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     }
 
     public Hand pickCards(Player player) {
-        if (ClassicPokerState.ACCEPTING_BEDS.equals(currentState)) {
+        if (ClassicPokerState.ACCEPTING_BEDS.equals(currentState) || ClassicPokerState.WAITING_FOR_PLAYERS_CHANGE_CARDS.equals(currentState)) {
             Player playerInGame = players.get(player.getId());
             if (playerInGame != null) {
+                LOGGER.info("returning the current hand for player {}", playerInGame.getName());
                 return playerInGame.getHand();
             }
-            System.out.println("The player is not registered and does not have a cards");
+            LOGGER.info("The player is not registered and does not have a cards");
         } else {
-            System.out.println("The game is in status " + currentState + " and is not accepting bets");
+            LOGGER.info("The game is in status {}  and is not accepting bets", currentState);
         }
         return null;
     }
 
     public void requestCardChange(Player player, List<Card> cards) {
         if (ClassicPokerState.WAITING_FOR_PLAYERS_CHANGE_CARDS.equals(currentState) && isPlayerInTheGame(player)) {
-
+            LOGGER.info("adding {} to change cards", player.getName());
+            LOGGER.info("{} cards to change {} ", cards.size(), cards);
+            if (isPlayerInTheGame(player)) {
+                for (Card toReplaceCard : cards) {
+                    player.addCard(configuration.getDeck().next(), toReplaceCard);
+                }
+                players.put(player.getId(), player);
+            }
         } else {
-            System.out.println("Player cna not change card in " + currentState + " state");
+            LOGGER.info("Player can not change card in {} state", currentState);
         }
     }
 
@@ -274,14 +291,9 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
         }
     }
 
-    private void stopGame(int stopType) {
-        if (stopType == 0) {
-            currentState = ClassicPokerState.FINISHED;
-            LOGGER.info("finishing by stopType {}, current state {}", stopType, currentState);
-        } else {
-            System.out.println("Finishing with a result");
-            currentState = ClassicPokerState.FINISHED;
-        }
+    private void stopGame(StopType stopType) {
+        currentState = ClassicPokerState.FINISHED;
+        LOGGER.info("finishing by stopType {}, current state {}", stopType, currentState);
     }
 
 
@@ -294,5 +306,9 @@ Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
         LOGGER.info("The game is not finished yet and has no winners, current state {}", currentState);
         return null;
+    }
+
+    public ClassicPokerState getCurrentState() {
+        return currentState;
     }
 }

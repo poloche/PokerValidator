@@ -2,10 +2,7 @@ package org.plc.pocker;
 
 import java.math.BigInteger;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Hand {
     private List<Card> cards;
@@ -93,5 +90,18 @@ public class Hand {
             handString.append(",");
         }
         return handString.toString();
+    }
+
+    public void replace(Card newCard, Card toReplaceCard) {
+        Iterator<Card> it = cards.iterator();
+        List<Card> assignedCards = new ArrayList<>();
+        while (it.hasNext()) {
+            Card inList = it.next();
+            if (toReplaceCard.equals(inList)) {
+                it.remove();
+                assignedCards.add(newCard);
+            }
+        }
+        cards.addAll(assignedCards);
     }
 }

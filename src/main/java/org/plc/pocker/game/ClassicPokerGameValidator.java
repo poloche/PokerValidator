@@ -58,7 +58,7 @@ public class ClassicPokerGameValidator {
         return  Collections.unmodifiableList(players);
     }
 
-    private void checkGames() {
+    public void checkGames() {
         AbstractGame start = configureGameRules();
         for (Player player : players) {
             start.checkGame(player);
